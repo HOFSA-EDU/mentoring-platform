@@ -1,0 +1,24 @@
+# Secrets must never enter a build layer or Next.js' standalone output.
+.env
+.env.*
+*.pem
+*.key
+.npmrc
+.git
+.next
+node_modules
+src/generated/prisma
+coverage
+playwright-report
+test-results
+tests
+**/*.test.*
+*.tsbuildinfo
+npm-debug.log*
+*.log
+backups
+*.dump
+docs
+prompts
+.vscode
+.idea

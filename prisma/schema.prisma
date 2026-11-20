@@ -1,0 +1,483 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  STUDENT
+  MENTOR
+  ADMIN
+}
+
+enum DevelopmentDomain {
+  ORGANISATION
+  WORK_START
+  HELP_SEEKING
+  LEARNING_UNDERSTANDING
+  PERCEIVED_WORKLOAD
+  STUDY_CONFIDENCE
+}
+
+enum QuestionType {
+  SINGLE_CHOICE
+  SCALE
+  BOOLEAN
+}
+
+enum QuestionContext {
+  ONBOARDING
+  WEEKLY
+}
+
+enum MentorConversationRequest {
+  YES
+  MAYBE
+  NO
+}
+
+enum CheckInKind {
+  ONBOARDING
+  WEEKLY
+}
+
+enum ObservationType {
+  REPEATED_DIFFICULTY
+  WORSENING_PATTERN
+  IMPROVEMENT
+  CONVERSATION_REQUEST
+}
+
+enum ObservationStatus {
+  OPEN
+  ACKNOWLEDGED
+  RESOLVED
+}
+
+enum FollowUpStatus {
+  OPEN
+  COMPLETED
+  CANCELLED
+}
+
+enum QuestStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum QuestAttempt {
+  YES
+  PARTLY
+  NO
+}
+
+enum QuestHelpfulness {
+  YES
+  A_LITTLE
+  NO
+  NOT_SURE
+}
+
+enum AuditAction {
+  STUDENT_CREATED
+  MENTOR_CREATED
+  ACCOUNT_UPDATED
+  ACCOUNT_ACTIVATED
+  ACCOUNT_DEACTIVATED
+  MENTOR_ASSIGNED
+  MENTOR_REASSIGNED
+  MENTOR_ASSIGNMENT_DEACTIVATED
+  SEMESTER_CREATED
+  SEMESTER_UPDATED
+  SEMESTER_ACTIVATED
+  SEMESTER_DEACTIVATED
+  QUESTION_CREATED
+  QUESTION_UPDATED
+  QUEST_TEMPLATE_CREATED
+  QUEST_TEMPLATE_UPDATED
+  ONBOARDING_SUBMITTED
+  WEEKLY_CHECK_IN_SUBMITTED
+  MENTOR_CONVERSATION_REQUESTED
+  OBSERVATION_CREATED
+  OBSERVATION_ACKNOWLEDGED
+  OBSERVATION_RESOLVED
+  MENTORING_CONVERSATION_CREATED
+  SHARED_AGREEMENT_CREATED
+  FOLLOW_UP_CREATED
+  FOLLOW_UP_COMPLETED
+  FOLLOW_UP_CANCELLED
+  QUEST_ASSIGNED
+  QUEST_CANCELLED
+  QUEST_REFLECTION_SUBMITTED
+  QUEST_COMPLETED
+}
+
+enum AuditEntityType {
+  USER
+  MENTOR_ASSIGNMENT
+  SEMESTER
+  QUESTION
+  QUEST_TEMPLATE
+  CHECK_IN
+  OBSERVATION
+  MENTORING_CONVERSATION
+  SHARED_AGREEMENT
+  FOLLOW_UP
+  QUEST_ASSIGNMENT
+  QUEST_REFLECTION
+}
+
+model User {
+  id             String          @id @default(cuid())
+  email          String          @unique
+  name           String
+  role           UserRole
+  passwordHash   String
+  active         Boolean         @default(true)
+  studentProfile StudentProfile?
+  mentorProfile  MentorProfile?
+  auditEvents    AuditEvent[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([role, active])
+}
+
+model StudentProfile {
+  id            String                  @id @default(cuid())
+  userId        String                  @unique
+  user          User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  semesterId    String
+  semester      Semester                @relation(fields: [semesterId], references: [id], onDelete: Restrict)
+  active        Boolean                 @default(true)
+  assignments   MentorAssignment[]
+  checkIns      CheckIn[]
+  observations  Observation[]
+  conversations MentoringConversation[]
+  followUps     FollowUp[]
+  quests        QuestAssignment[]
+  createdAt     DateTime                @default(now())
+  updatedAt     DateTime                @updatedAt
+
+  @@index([semesterId, active])
+  @@index([active])
+}
+
+model MentorProfile {
+  id            String                  @id @default(cuid())
+  userId        String                  @unique
+  user          User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  active        Boolean                 @default(true)
+  assignments   MentorAssignment[]
+  conversations MentoringConversation[]
+  followUps     FollowUp[]
+  quests        QuestAssignment[]
+  createdAt     DateTime                @default(now())
+  updatedAt     DateTime                @updatedAt
+
+  @@index([active])
+}
+
+model MentorAssignment {
+  id            String         @id @default(cuid())
+  studentId     String
+  student       StudentProfile @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  mentorId      String
+  mentor        MentorProfile  @relation(fields: [mentorId], references: [id], onDelete: Restrict)
+  active        Boolean        @default(true)
+  assignedAt    DateTime       @default(now())
+  deactivatedAt DateTime?
+
+  @@index([studentId, active])
+  @@index([mentorId, active])
+  @@index([studentId, mentorId, assignedAt])
+}
+
+model Semester {
+  id            String                  @id @default(cuid())
+  name          String                  @unique
+  startDate     DateTime
+  endDate       DateTime
+  active        Boolean                 @default(false)
+  students      StudentProfile[]
+  checkIns      CheckIn[]
+  observations  Observation[]
+  conversations MentoringConversation[]
+  createdAt     DateTime                @default(now())
+  quests        QuestAssignment[]
+  updatedAt     DateTime                @updatedAt
+
+  @@index([active])
+  @@index([startDate, endDate])
+}
+
+model Question {
+  id        String            @id @default(cuid())
+  key       String            @unique
+  text      String
+  domain    DevelopmentDomain
+  type      QuestionType
+  context   QuestionContext   @default(WEEKLY)
+  stable    Boolean           @default(false)
+  active    Boolean           @default(true)
+  sortOrder Int
+  options   QuestionOption[]
+  answers   CheckInAnswer[]
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  @@index([context, active, stable, sortOrder])
+  @@index([context, domain, active])
+}
+
+model QuestionOption {
+  id             String   @id @default(cuid())
+  questionId     String
+  question       Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  label          String
+  value          String
+  directionValue Int?
+  sortOrder      Int
+
+  @@unique([questionId, value])
+  @@unique([questionId, sortOrder])
+  @@index([questionId])
+}
+
+model QuestTemplate {
+  id                  String            @id @default(cuid())
+  key                 String            @unique
+  title               String
+  description         String
+  domain              DevelopmentDomain
+  active              Boolean           @default(true)
+  defaultDurationDays Int
+  reflectionPrompt    String
+  assignments         QuestAssignment[]
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  @@index([domain, active])
+}
+
+model CheckIn {
+  id                        String                    @id @default(cuid())
+  studentId                 String
+  student                   StudentProfile            @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  semesterId                String
+  semester                  Semester                  @relation(fields: [semesterId], references: [id], onDelete: Restrict)
+  kind                      CheckInKind
+  periodKey                 String
+  submittedAt               DateTime                  @default(now())
+  mentorConversationRequest MentorConversationRequest @default(NO)
+  answers                   CheckInAnswer[]
+  observationEvidence       ObservationEvidence[]
+  createdAt                 DateTime                  @default(now())
+
+  @@unique([studentId, semesterId, periodKey])
+  @@index([studentId, submittedAt])
+  @@index([semesterId, periodKey, kind])
+}
+
+model CheckInAnswer {
+  id                        String                @id @default(cuid())
+  checkInId                 String
+  checkIn                   CheckIn               @relation(fields: [checkInId], references: [id], onDelete: Cascade)
+  questionId                String
+  question                  Question              @relation(fields: [questionId], references: [id], onDelete: Restrict)
+  selectedOptionId          String
+  questionTextSnapshot      String
+  optionLabelSnapshot       String
+  directionValueSnapshot    Int?
+  domainSnapshot            DevelopmentDomain?
+  stableSnapshot            Boolean?
+  questionSignatureSnapshot String?
+  sortOrder                 Int
+  observationEvidence       ObservationEvidence[]
+
+  @@unique([checkInId, questionId])
+  @@index([checkInId, sortOrder])
+  @@index([questionId])
+  @@index([selectedOptionId])
+}
+
+model Observation {
+  id              String                             @id @default(cuid())
+  studentId       String
+  student         StudentProfile                     @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  semesterId      String
+  semester        Semester                           @relation(fields: [semesterId], references: [id], onDelete: Restrict)
+  domain          DevelopmentDomain?
+  type            ObservationType
+  status          ObservationStatus                  @default(OPEN)
+  ruleKey         String
+  episodeKey      String
+  title           String
+  summary         String
+  firstDetectedAt DateTime
+  lastDetectedAt  DateTime
+  acknowledgedAt  DateTime?
+  resolvedAt      DateTime?
+  evidence        ObservationEvidence[]
+  conversations   MentoringConversationObservation[]
+  createdAt       DateTime                           @default(now())
+  updatedAt       DateTime                           @updatedAt
+
+  @@unique([studentId, semesterId, ruleKey, episodeKey])
+  @@unique([id, studentId])
+  @@index([studentId, status, lastDetectedAt])
+}
+
+model ObservationEvidence {
+  id                   String         @id @default(cuid())
+  observationId        String
+  observation          Observation    @relation(fields: [observationId], references: [id], onDelete: Cascade)
+  sourceKey            String
+  checkInId            String
+  checkIn              CheckIn        @relation(fields: [checkInId], references: [id], onDelete: Restrict)
+  checkInAnswerId      String?
+  checkInAnswer        CheckInAnswer? @relation(fields: [checkInAnswerId], references: [id], onDelete: Restrict)
+  periodKey            String
+  questionId           String?
+  questionTextSnapshot String
+  optionLabelSnapshot  String
+  submittedAt          DateTime
+  createdAt            DateTime       @default(now())
+
+  @@unique([observationId, sourceKey])
+  @@index([checkInId])
+  @@index([checkInAnswerId])
+}
+
+// Private record. Student reads use SharedAgreement with an explicit projection.
+model MentoringConversation {
+  id              String                             @id @default(cuid())
+  studentId       String
+  student         StudentProfile                     @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  mentorId        String
+  mentor          MentorProfile                      @relation(fields: [mentorId], references: [id], onDelete: Restrict)
+  semesterId      String
+  semester        Semester                           @relation(fields: [semesterId], references: [id], onDelete: Restrict)
+  submissionKey   String
+  occurredAt      DateTime
+  topic           String
+  privateNote     String?
+  sharedAgreement SharedAgreement?
+  observations    MentoringConversationObservation[]
+  followUps       FollowUp[]
+  quests          QuestAssignment[]
+  createdAt       DateTime                           @default(now())
+  updatedAt       DateTime                           @updatedAt
+
+  @@unique([mentorId, submissionKey])
+  @@unique([id, studentId])
+  @@unique([id, studentId, mentorId])
+  @@index([studentId, occurredAt])
+}
+
+model SharedAgreement {
+  id             String                @id @default(cuid())
+  conversationId String                @unique
+  conversation   MentoringConversation @relation(fields: [conversationId], references: [id], onDelete: Restrict)
+  text           String
+  quests         QuestAssignment[]
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+}
+
+// Composite foreign keys prohibit linking another student's Observation.
+model MentoringConversationObservation {
+  conversationId String
+  observationId  String
+  studentId      String
+  conversation   MentoringConversation @relation(fields: [conversationId, studentId], references: [id, studentId], onDelete: Restrict)
+  observation    Observation           @relation(fields: [observationId, studentId], references: [id, studentId], onDelete: Restrict)
+
+  @@id([conversationId, observationId])
+  @@index([observationId, studentId])
+}
+
+model FollowUp {
+  id             String                @id @default(cuid())
+  studentId      String
+  student        StudentProfile        @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  mentorId       String
+  mentor         MentorProfile         @relation(fields: [mentorId], references: [id], onDelete: Restrict)
+  conversationId String
+  conversation   MentoringConversation @relation(fields: [conversationId, studentId, mentorId], references: [id, studentId, mentorId], onDelete: Restrict)
+  dueAt          DateTime              @db.Date
+  status         FollowUpStatus        @default(OPEN)
+  note           String?
+  completedAt    DateTime?
+  cancelledAt    DateTime?
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+
+  @@index([studentId, status, dueAt])
+}
+
+model QuestAssignment {
+  id                       String                 @id @default(cuid())
+  studentId                String
+  student                  StudentProfile         @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  mentorId                 String
+  mentor                   MentorProfile          @relation(fields: [mentorId], references: [id], onDelete: Restrict)
+  semesterId               String
+  semester                 Semester               @relation(fields: [semesterId], references: [id], onDelete: Restrict)
+  questTemplateId          String?
+  questTemplate            QuestTemplate?         @relation(fields: [questTemplateId], references: [id], onDelete: Restrict)
+  mentoringConversationId  String?
+  mentoringConversation    MentoringConversation? @relation(fields: [mentoringConversationId, studentId], references: [id, studentId], onDelete: Restrict)
+  sharedAgreementId        String?
+  sharedAgreement          SharedAgreement?       @relation(fields: [sharedAgreementId], references: [id], onDelete: Restrict)
+  submissionKey            String
+  // Assignment snapshots: never joined to mutable template wording for display.
+  title                    String
+  description              String
+  domain                   DevelopmentDomain
+  reflectionPromptSnapshot String
+  assignedAt               DateTime               @default(now())
+  dueAt                    DateTime               @db.Date
+  status                   QuestStatus            @default(ACTIVE)
+  // Capacity slots, not scores. SQL constrains ACTIVE slots to 1 or 2.
+  activeSlot               Int?
+  completedAt              DateTime?
+  cancelledAt              DateTime?
+  reflection               QuestReflection?
+  createdAt                DateTime               @default(now())
+  updatedAt                DateTime               @updatedAt
+
+  @@unique([studentId, activeSlot])
+  @@unique([mentorId, submissionKey])
+  @@index([studentId, status, assignedAt])
+}
+
+model QuestReflection {
+  id                String           @id @default(cuid())
+  questAssignmentId String           @unique
+  questAssignment   QuestAssignment  @relation(fields: [questAssignmentId], references: [id], onDelete: Restrict)
+  attempted         QuestAttempt
+  helpful           QuestHelpfulness
+  reflectionText    String?
+  submittedAt       DateTime         @default(now())
+  createdAt         DateTime         @default(now())
+}
+
+model AuditEvent {
+  id          String          @id @default(cuid())
+  actorUserId String
+  actor       User            @relation(fields: [actorUserId], references: [id], onDelete: Restrict)
+  action      AuditAction
+  entityType  AuditEntityType
+  entityId    String
+  metadata    Json?
+  createdAt   DateTime        @default(now())
+
+  @@index([actorUserId, createdAt])
+  @@index([entityType, entityId, createdAt])
+  @@index([action, createdAt])
+}

@@ -1,0 +1,303 @@
+[
+  {
+    "context": "ONBOARDING",
+    "stable": false,
+    "domain": "ORGANISATION",
+    "text": "You receive an assignment that is due in one week. What usually happens first?",
+    "labels": [
+      "I decide early when I will work on it.",
+      "I keep it in mind but do not make a concrete plan.",
+      "I usually start when the deadline gets closer.",
+      "I sometimes lose track of assignments like this."
+    ]
+  },
+  {
+    "context": "ONBOARDING",
+    "stable": false,
+    "domain": "ORGANISATION",
+    "text": "You have several assignments due in the same week. How do you usually handle them?",
+    "labels": [
+      "I prioritize them and plan my time.",
+      "I work through them one by one without much of a plan.",
+      "I switch between tasks depending on what feels most urgent.",
+      "I often do not know where to start."
+    ]
+  },
+  {
+    "context": "ONBOARDING",
+    "stable": false,
+    "domain": "WORK_START",
+    "text": "You know you need to work on an important task, but it feels quite large. What usually happens?",
+    "labels": [
+      "I start with one small first step.",
+      "I think about it for a while and start later.",
+      "I postpone it until there is more time pressure.",
+      "I often do not know how to begin."
+    ]
+  },
+  {
+    "context": "ONBOARDING",
+    "stable": false,
+    "domain": "WORK_START",
+    "text": "You still have several days before an assignment is due. How likely are you to start working on it already?",
+    "labels": [
+      "Very likely.",
+      "It depends on the assignment.",
+      "I usually start closer to the deadline.",
+      "Almost never without external pressure."
+    ]
+  },
+  {
+    "context": "ONBOARDING",
+    "stable": false,
+    "domain": "HELP_SEEKING",
+    "text": "You do not understand something important during class. What do you usually do?",
+    "labels": [
+      "I ask immediately.",
+      "I ask someone later.",
+      "I try to solve it on my own first.",
+      "I usually leave it unresolved for now."
+    ]
+  },
+  {
+    "context": "ONBOARDING",
+    "stable": false,
+    "domain": "HELP_SEEKING",
+    "text": "You are working on an assignment and have been stuck for a while. What usually happens?",
+    "labels": [
+      "I ask for help relatively quickly.",
+      "I keep trying on my own for a while.",
+      "I switch to something else first.",
+      "I often stay stuck for a long time without asking anyone."
+    ]
+  },
+  {
+    "context": "ONBOARDING",
+    "stable": false,
+    "domain": "LEARNING_UNDERSTANDING",
+    "text": "You have studied a topic. How do you usually check whether you really understood it?",
+    "labels": [
+      "I test myself or try to explain it to someone.",
+      "I work on exercises related to it.",
+      "I read through my notes again.",
+      "I usually do not really check."
+    ]
+  },
+  {
+    "context": "ONBOARDING",
+    "stable": false,
+    "domain": "LEARNING_UNDERSTANDING",
+    "text": "You receive a solution to an assignment, but you do not understand why it works. What do you usually do?",
+    "labels": [
+      "I try to understand why the solution works.",
+      "I ask someone to explain it.",
+      "I mainly remember the steps used in the solution.",
+      "I move on as long as I managed to complete the task."
+    ]
+  },
+  {
+    "context": "ONBOARDING",
+    "stable": false,
+    "domain": "PERCEIVED_WORKLOAD",
+    "text": "Several deadlines fall into the same week. How do you usually react?",
+    "labels": [
+      "I organize the tasks and work through them by priority.",
+      "I feel some pressure but usually keep track of everything.",
+      "I partially lose track of what needs to be done.",
+      "I quickly feel blocked and do not know where to start."
+    ]
+  },
+  {
+    "context": "ONBOARDING",
+    "stable": false,
+    "domain": "STUDY_CONFIDENCE",
+    "text": "You receive a difficult assignment that you have never done before. What is your typical first reaction?",
+    "labels": [
+      "I assume I can work it out step by step.",
+      "I feel unsure but start anyway.",
+      "I wait because I am worried about doing it wrong.",
+      "I quickly think that I probably cannot do it."
+    ]
+  },
+  {
+    "context": "WEEKLY",
+    "stable": true,
+    "domain": "ORGANISATION",
+    "text": "How well did you keep track of your assignments and deadlines this week?",
+    "labels": [
+      "I had everything under control.",
+      "I kept track of most things.",
+      "I lost track of some things.",
+      "I lost track of several things."
+    ]
+  },
+  {
+    "context": "WEEKLY",
+    "stable": true,
+    "domain": "WORK_START",
+    "text": "How often did you start an assignment later than you originally intended this week?",
+    "labels": [
+      "Never.",
+      "Once.",
+      "Several times.",
+      "For almost every larger assignment."
+    ]
+  },
+  {
+    "context": "WEEKLY",
+    "stable": true,
+    "domain": "HELP_SEEKING",
+    "text": "When you did not understand something or got stuck this week, how quickly did you ask for help?",
+    "labels": [
+      "Relatively quickly.",
+      "After some time.",
+      "Very late.",
+      "I did not ask even though I needed help.",
+      "I did not need help this week."
+    ]
+  },
+  {
+    "context": "WEEKLY",
+    "stable": false,
+    "domain": "ORGANISATION",
+    "text": "How often did you forget that an assignment or deadline was coming up this week?",
+    "labels": [
+      "Not at all.",
+      "Once.",
+      "Several times.",
+      "Very often."
+    ]
+  },
+  {
+    "context": "WEEKLY",
+    "stable": false,
+    "domain": "ORGANISATION",
+    "text": "How often did you clearly know what you should work on next this week?",
+    "labels": [
+      "Almost always.",
+      "Most of the time.",
+      "Sometimes.",
+      "Rarely."
+    ]
+  },
+  {
+    "context": "WEEKLY",
+    "stable": false,
+    "domain": "WORK_START",
+    "text": "How often did you postpone an assignment this week even though you actually had time to work on it?",
+    "labels": [
+      "Not at all.",
+      "Once.",
+      "Several times.",
+      "Very often."
+    ]
+  },
+  {
+    "context": "WEEKLY",
+    "stable": false,
+    "domain": "WORK_START",
+    "text": "When a task felt large or unclear this week, how well were you able to identify a first step?",
+    "labels": [
+      "Very well.",
+      "Usually well.",
+      "Only with difficulty.",
+      "Often not at all."
+    ]
+  },
+  {
+    "context": "WEEKLY",
+    "stable": false,
+    "domain": "HELP_SEEKING",
+    "text": "Was there a situation this week where you probably should have asked for help but did not?",
+    "labels": [
+      "No.",
+      "Once.",
+      "Several times.",
+      "I am not sure."
+    ]
+  },
+  {
+    "context": "WEEKLY",
+    "stable": false,
+    "domain": "HELP_SEEKING",
+    "text": "How easy was it for you this week to tell a teacher, mentor, or classmate that you did not understand something?",
+    "labels": [
+      "Very easy.",
+      "Rather easy.",
+      "Rather difficult.",
+      "Very difficult."
+    ]
+  },
+  {
+    "context": "WEEKLY",
+    "stable": false,
+    "domain": "LEARNING_UNDERSTANDING",
+    "text": "How often did you have the feeling this week: \"I completed it, but I did not really understand it\"?",
+    "labels": [
+      "Never.",
+      "Once.",
+      "Several times.",
+      "Very often."
+    ]
+  },
+  {
+    "context": "WEEKLY",
+    "stable": false,
+    "domain": "LEARNING_UNDERSTANDING",
+    "text": "How often did you actively check whether you really understood a topic this week?",
+    "labels": [
+      "Several times.",
+      "Once.",
+      "Not at all.",
+      "I did not know how to check."
+    ]
+  },
+  {
+    "context": "WEEKLY",
+    "stable": false,
+    "domain": "PERCEIVED_WORKLOAD",
+    "text": "How often did you feel this week that too many things were happening at the same time?",
+    "labels": [
+      "Never.",
+      "Once.",
+      "Several times.",
+      "Very often."
+    ]
+  },
+  {
+    "context": "WEEKLY",
+    "stable": false,
+    "domain": "PERCEIVED_WORKLOAD",
+    "text": "How well were you able to decide what was most important when you had several tasks this week?",
+    "labels": [
+      "Very well.",
+      "Usually well.",
+      "Only partly.",
+      "Often not at all."
+    ]
+  },
+  {
+    "context": "WEEKLY",
+    "stable": false,
+    "domain": "STUDY_CONFIDENCE",
+    "text": "When you encountered a difficult assignment this week, what did you usually think?",
+    "labels": [
+      "I will find a way.",
+      "This will be difficult, but I will try.",
+      "I quickly became unsure.",
+      "I quickly thought that I probably could not do it."
+    ]
+  },
+  {
+    "context": "WEEKLY",
+    "stable": false,
+    "domain": "STUDY_CONFIDENCE",
+    "text": "How often did you start an assignment this week even though you were not sure you could solve it correctly?",
+    "labels": [
+      "Several times.",
+      "Once.",
+      "Not at all.",
+      "There was no situation like this."
+    ]
+  }
+]

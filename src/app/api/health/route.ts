@@ -1,0 +1,17 @@
+import { getAuthEnvironment } from "@/lib/env";
+import { prisma } from "@/lib/prisma";
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+export async function GET() {
+  const headers = { "Cache-Control": "no-store" };
+
+  try {
+    getAuthEnvironment();
+    await prisma.$queryRaw`SELECT 1`;
+    return Response.json({ status: "ok" }, { headers });
+  } catch {
+    return Response.json({ status: "unavailable" }, { status: 503, headers });
+  }
+}
